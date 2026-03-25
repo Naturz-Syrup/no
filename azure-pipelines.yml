@@ -1,42 +1,6 @@
-﻿trigger:
-  branches:
-    include:
-      - main
-      - develop
-
-pool:
-  vmImage: 'ubuntu-latest'
-
-variables:
-  buildConfiguration: 'Release'
-  diagnosticsDir: 'diagnostics'
-
-steps:
-  - task: UseJava@1
+  - task: AzureWebApp@1
     inputs:
-      versionSpec: '17'
-  - script: |
-      mkdir -p $(diagnosticsDir)
-      chmod +x ./scripts/preflight.sh || true
-    displayName: 'Prepare preflight'
-  - script: ./scripts/preflight.sh
-    displayName: 'Run preflight checks'
-    continueOnError: false
-  - script: |
-      if [ -f gradlew ]; then ./gradlew assemble -x test; else gradle assemble -x test || true; fi
-    displayName: 'Build artifact'
-  - script: |
-      if [ -f gradlew ]; then ./gradlew test || true; else gradle test || true; fi
-    displayName: 'Run tests'
-    continueOnError: true
-  - script: |
-      tar -czf $(diagnosticsDir)/pipeline-diagnostics-$(Build.BuildId).tgz diagnostics || true
-    displayName: 'Package diagnostics'
-  - task: PublishBuildArtifacts@1
-    inputs:
-      pathToPublish: '$(diagnosticsDir)'
-      artifactName: 'diagnostics'
-  - script: |
-      # optional: deploy to Azure Web App using built-in task if configured
-      echo "Deployment step placeholder"
-    displayName: 'Deploy placeholder'
+      azureSubscription: 'Azure subscription 1'
+      appName: 'AiMe'
+      package: '$(System.DefaultWorkingDirectory)/AiMe'
+    displayName: 'Deploy AiMe to Azure Web App'
