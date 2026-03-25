@@ -1,0 +1,32 @@
+﻿# Windows system
+AppData/
+NTUSER.DAT*
+Thumbs.db
+Desktop.ini
+
+# OneDrive and user profile cruft
+OneDrive/
+Downloads/
+Music/
+Pictures/
+Videos/
+Saved Games/
+Contacts/
+Favorites/
+Links/
+Searches/
+
+# VS Code and Python
+.vscode/
+__pycache__/
+*.pyc
+
+# SSH private keys
+id_ed25519
+id_rsa
+id_ecdsa
+
+# Node / build artifacts (optional)
+node_modules/
+dist/
+build/
