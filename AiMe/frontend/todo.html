@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #todo-list { list-style-type: none; padding: 0; }
+        .completed { text-decoration: line-through; }
+        input[type='text'] { width: 70%; padding: 10px; }
+        input[type='submit'] { padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>To-Do List</h1>
+    <input type="text" id="todo-input" placeholder="Add a new task...">
+    <input type="submit" value="Add" id="add-button">
+    <ul id="todo-list"></ul>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', loadTodos);
+
+        const todoInput = document.getElementById('todo-input');
+        const todoList = document.getElementById('todo-list');
+        const addButton = document.getElementById('add-button');
+
+        addButton.addEventListener('click', addTodo);
+
+        function loadTodos() {
+            const todos = JSON.parse(localStorage.getItem('todos')) || [];
+            todos.forEach(todo => {
+                addTodoToList(todo);
+            });
+        }
+
+        function addTodo() {
+            const todoText = todoInput.value.trim();
+            if (todoText === '') return;
+            addTodoToList(todoText);
+            saveTodoToLocalStorage(todoText);
+            todoInput.value = '';
+        }
+
+        function addTodoToList(todoText) {
+            const li = document.createElement('li');
+            li.textContent = todoText;
+            li.addEventListener('click', () => {
+                li.classList.toggle('completed');
+                updateLocalStorage();
+            });
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                li.remove();
+                updateLocalStorage();
+            });
+            li.appendChild(deleteButton);
+            todoList.appendChild(li);
+        }
+
+        function saveTodoToLocalStorage(todoText) {
+            const todos = JSON.parse(localStorage.getItem('todos')) || [];
+            todos.push(todoText);
+            localStorage.setItem('todos', JSON.stringify(todos));
+        }
+
+        function updateLocalStorage() {
+            const todos = [];
+            todoList.querySelectorAll('li').forEach(li => {
+                todos.push({ text: li.firstChild.textContent, completed: li.classList.contains('completed') });
+            });
+            localStorage.setItem('todos', JSON.stringify(todos));
+        }
+    </script>
+</body>
+</html>

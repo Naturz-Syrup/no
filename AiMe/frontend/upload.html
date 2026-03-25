@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Content</title>
+</head>
+<body>
+    <h1>Upload Content to AiMe</h1>
+    <form id="uploadForm">
+        <label for="filename">Filename:</label>
+        <input type="text" id="filename" name="filename" required>
+
+        <label for="platform">Platform:</label>
+        <select id="platform" name="platform" required>
+            <option value="platform1">Platform 1</option>
+            <option value="platform2">Platform 2</option>
+            <option value="platform3">Platform 3</option>
+        </select>
+
+        <label for="tags">Tags:</label>
+        <input type="text" id="tags" name="tags" placeholder="Enter tags separated by commas" required>
+
+        <button type="submit">Upload</button>
+    </form>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+
+            fetch('/api/ingest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Upload Successful: ' + JSON.stringify(data));
+            })
+            .catch(error => {
+                alert('Error during upload: ' + error);
+            });
+        });
+    </script>
+</body>
+</html>
