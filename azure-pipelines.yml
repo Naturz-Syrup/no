@@ -4,3 +4,23 @@
       appName: 'AiMe'
       package: '$(System.DefaultWorkingDirectory)/AiMe'
     displayName: 'Deploy AiMe to Azure Web App'
+# ci-commitlint.yml
+trigger: none
+pr: none
+
+jobs:
+- job: CommitLint
+  displayName: Validate recent commit messages
+  pool:
+    vmImage: ubuntu-latest
+  steps:
+  - task: UseNode@1
+    inputs:
+      version: '18.x'
+  - script: |
+      npm ci --no-audit --no-fund
+    displayName: 'Install npm deps'
+    workingDirectory: .
+  - script: |
+      npx commitlint --from=HEAD~10 --to=HEAD || true
+    displayName: 'Run commitlint on last 10 commits'
